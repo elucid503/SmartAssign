@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun run --watch src/Index.ts",
-    "start": "bun run src/Index.ts",
-    "build": "bun build src/Index.ts --outdir ./dist --target bun",
-    "lint": "eslint src --ext .ts"
+    "start": "bun run src/Index.ts"
   },
   "dependencies": {
     "hono": "^3.11.7",

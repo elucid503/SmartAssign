@@ -7,8 +7,8 @@ const SettingsPage: React.FC = () => {
   const { User } = UseAuth();
   const [IsDarkMode, SetIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('darkMode') === 'true' || 
-             (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      return localStorage.getItem('DarkMode') === 'true' || 
+             (!localStorage.getItem('DarkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
     }
     return false;
   });
@@ -16,10 +16,10 @@ const SettingsPage: React.FC = () => {
   useEffect(() => {
     if (IsDarkMode) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
+      localStorage.setItem('DarkMode', 'true');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
+      localStorage.setItem('DarkMode', 'false');
     }
   }, [IsDarkMode]);
 

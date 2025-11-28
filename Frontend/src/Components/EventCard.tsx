@@ -21,13 +21,13 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({ Event, OnDelete, OnEdit }) => {
   const FormatTime = (DateString: string) => {
-    const Date = new Date(DateString);
-    return Date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    const dateObj = new Date(DateString);
+    return dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
   };
 
   const FormatDate = (DateString: string) => {
-    const Date = new Date(DateString);
-    return Date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const dateObj = new Date(DateString);
+    return dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
   const HandleDelete = (E: React.MouseEvent) => {

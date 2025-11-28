@@ -29,19 +29,19 @@ const Navbar: React.FC = () => {
               <span className="text-2xl font-bold text-primary-600">SmartAssign</span>
             </Link>
             <div className="hidden md:flex ml-10 space-x-4">
-              {NavLinks.map((Link) => (
-                <a
-                  key={Link.Path}
-                  href={Link.Path}
+              {NavLinks.map((link) => (
+                <Link
+                  key={link.Path}
+                  to={link.Path}
                   className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    Location.pathname === Link.Path
+                    Location.pathname === link.Path
                       ? 'bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <Link.Icon className="w-4 h-4 mr-2" />
-                  {Link.Label}
-                </a>
+                  <link.Icon className="w-4 h-4 mr-2" />
+                  {link.Label}
+                </Link>
               ))}
             </div>
           </div>

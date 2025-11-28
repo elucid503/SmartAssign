@@ -32,8 +32,8 @@ export const SubtaskSchema = z.object({
 export const EventSchema = z.object({
   Title: z.string().min(1, 'Title is required'),
   Description: z.string().optional(),
-  StartTime: z.string().datetime(),
-  EndTime: z.string().datetime(),
+  StartTime: z.string().refine(val => !isNaN(Date.parse(val)), 'Invalid start time'),
+  EndTime: z.string().refine(val => !isNaN(Date.parse(val)), 'Invalid end time'),
   Location: z.string().optional(),
   Category: z.string().optional(),
   Color: z.string().optional(),

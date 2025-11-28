@@ -20,16 +20,30 @@ const CalendarPage: React.FC = () => {
   const [Events, SetEvents] = useState<Event[]>([]);
   const [IsLoading, SetIsLoading] = useState(true);
   const [ShowModal, SetShowModal] = useState(false);
+  const now = new Date();
+  const defaultStartTime = now.toISOString().slice(0, 16);
+  const defaultEndTime = new Date(now.getTime() + 60 * 60 * 1000).toISOString().slice(0, 16);
   const [NewEvent, SetNewEvent] = useState({
     Title: '',
     Description: '',
-    StartTime: '',
-    EndTime: '',
+    StartTime: defaultStartTime,
+    EndTime: defaultEndTime,
     Location: '',
     Category: '',
     Color: '#0ea5e9',
     IsAllDay: false,
   });
+
+  const colorOptions = [
+    '#0ea5e9', // blue
+    '#10b981', // green
+    '#f59e0b', // yellow
+    '#ef4444', // red
+    '#8b5cf6', // purple
+    '#ec4899', // pink
+    '#6b7280', // gray
+    '#374151', // dark gray
+  ];
 
   useEffect(() => {
     FetchEvents();
@@ -54,8 +68,8 @@ const CalendarPage: React.FC = () => {
       SetNewEvent({
         Title: '',
         Description: '',
-        StartTime: '',
-        EndTime: '',
+        StartTime: defaultStartTime,
+        EndTime: defaultEndTime,
         Location: '',
         Category: '',
         Color: '#0ea5e9',
@@ -82,16 +96,16 @@ const CalendarPage: React.FC = () => {
   };
 
   const GroupedEvents = Events.reduce((Groups: { [key: string]: Event[] }, Event) => {
-    const Date = new Date(Event.StartTime).toLocaleDateString('en-US', {
+    const dateKey = new Date(Event.StartTime).toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
-    if (!Groups[Date]) {
-      Groups[Date] = [];
+    if (!Groups[dateKey]) {
+      Groups[dateKey] = [];
     }
-    Groups[Date].push(Event);
+    Groups[dateKey].push(Event);
     return Groups;
   }, {});
 
@@ -118,10 +132,10 @@ const CalendarPage: React.FC = () => {
         {/* Event List */}
         <div className="space-y-8">
           {Object.entries(GroupedEvents)
-            .sort(([DateA], [DateB]) => new Date(DateA).getTime() - new Date(DateB).getTime())
-            .map(([Date, DayEvents]) => (
-              <div key={Date}>
-                <h2 className="text-xl font-semibold mb-4">{Date}</h2>
+            .sort(([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime())
+            .map(([dateKey, DayEvents]) => (
+              <div key={dateKey}>
+                <h2 className="text-xl font-semibold mb-4">{dateKey}</h2>
                 <div className="space-y-4">
                   {DayEvents.map((Event) => (
                     <EventCard
@@ -213,12 +227,19 @@ const CalendarPage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-2">Color</label>
-                <input
-                  type="color"
-                  value={NewEvent.Color}
-                  onChange={(E) => SetNewEvent({ ...NewEvent, Color: E.target.value })}
-                  className="input-field h-12"
-                />
+                <div className="flex space-x-2 flex-wrap">
+                  {colorOptions.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={`w-8 h-8 rounded-full border-2 ${
+                        NewEvent.Color === color ? 'border-gray-800 dark:border-gray-200' : 'border-gray-300'
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => SetNewEvent({ ...NewEvent, Color: color })}
+                    />
+                  ))}
+                </div>
               </div>
 
               <div className="flex items-center">

@@ -49,20 +49,18 @@ export class SchedulingService {
 
   /**
    * Find available time slots between events
-   */
-  private static FindAvailableSlots(
-    Events: IEvent[],
-    StartDate: Date,
-    EndDate: Date,
-    MinSlotDuration: number = 30 // minutes
-  ): TimeSlot[] {
+  */
+  private static FindAvailableSlots(Events: IEvent[], StartDate: Date, EndDate: Date, MinSlotDuration: number = 30): TimeSlot[] {
+    
     const Slots: TimeSlot[] = [];
     const SortedEvents = Events.sort((a, b) => a.StartTime.getTime() - b.StartTime.getTime());
 
     let CurrentTime = StartDate;
 
     for (const Event of SortedEvents) {
-      // If there's a gap before this event
+
+      if (!Event.Title) { continue; } // Skip invalid events
+      
       if (isBefore(CurrentTime, Event.StartTime)) {
         const SlotDuration = (Event.StartTime.getTime() - CurrentTime.getTime()) / (1000 * 60);
         
@@ -160,7 +158,8 @@ export class SchedulingService {
       // Get all events in the time range
       const Events = await EventModel.find({
         UserId,
-        StartTime: { $gte: Start, $lte: End },
+        StartTime: { $lt: End },
+        EndTime: { $gt: Start },
       });
 
       // Sort tasks by priority score
@@ -180,13 +179,14 @@ export class SchedulingService {
 
         // Get events for this day
         const DayEvents = Events.filter(
-          e => e.StartTime >= DayStart && e.StartTime <= DayEnd
+          e => e.StartTime <= DayEnd && e.EndTime >= DayStart
         );
 
         // Combine with already scheduled slots
         const AllBusySlots = [...DayEvents, ...ScheduledSlots.map(s => ({
           StartTime: s.Start,
           EndTime: s.End,
+          Title: 'Scheduled Task',
         } as any))];
 
         const AvailableSlots = this.FindAvailableSlots(
@@ -216,12 +216,25 @@ export class SchedulingService {
             // Mark this slot as occupied
             ScheduledSlots.push(BestSlot);
             
-            // Remove this slot from available slots for this day
+            // Update available slots
             const SlotIndex = AvailableSlots.findIndex(
               s => s.Start.getTime() === BestSlot.Start.getTime()
             );
+            
             if (SlotIndex !== -1) {
+              const UsedSlot = AvailableSlots[SlotIndex];
               AvailableSlots.splice(SlotIndex, 1);
+              
+              // If there is remaining time in the slot, add it back as a new slot
+              if (BestSlot.End.getTime() < UsedSlot.End.getTime()) {
+                AvailableSlots.push({
+                  Start: BestSlot.End,
+                  End: UsedSlot.End
+                });
+                
+                // Sort slots by start time to maintain order
+                AvailableSlots.sort((a, b) => a.Start.getTime() - b.Start.getTime());
+              }
             }
           }
         }
