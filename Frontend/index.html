@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" class="">
+  <head>
+
+    <script>
+
+      // Getting ahead of FOUC for dark mode
+
+      if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.backgroundColor = '#111827';
+      } else {
+        document.documentElement.style.backgroundColor = '#f9fafb';
+      }
+
+    </script>
+
+    <meta charset="UTF-8" />
+
+    <!-- Light mode favicon -->
+    <link rel="icon" href="/public/light.ico" media="(prefers-color-scheme: light)" >
+    
+    <!-- Dark mode favicon-->
+    <link rel="icon" href="/public/dark.ico" media="(prefers-color-scheme: dark)" >
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SmartAssign</title>
+
+  </head>
+
+  <body>
+
+    <div id="root"></div>
+    <script type="module" src="/Src/Main.tsx"></script>
+
+  </body>
+
+</html>

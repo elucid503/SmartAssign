@@ -1,0 +1,64 @@
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Calendar, CheckSquare, LayoutDashboard, LogOut, Settings } from 'lucide-react';
+import { UseAuth } from '../Utils/AuthContext';
+
+const Navbar: React.FC = () => {
+  const Location = useLocation();
+  const Navigate = useNavigate();
+  const { User, Logout } = UseAuth();
+
+  const HandleLogout = () => {
+    Logout();
+    Navigate('/login');
+  };
+
+  const NavLinks = [
+    { Path: '/dashboard', Label: 'Dashboard', Icon: LayoutDashboard },
+    { Path: '/tasks', Label: 'Tasks', Icon: CheckSquare },
+    { Path: '/calendar', Label: 'Calendar', Icon: Calendar },
+    { Path: '/settings', Label: 'Settings', Icon: Settings },
+  ];
+
+  return (
+    <nav className="bg-white dark:bg-gray-800 shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to="/dashboard" className="flex items-center">
+              <span className="text-2xl font-bold text-primary-600">SmartAssign</span>
+            </Link>
+            <div className="hidden md:flex ml-10 space-x-4">
+              {NavLinks.map((Link) => (
+                <a
+                  key={Link.Path}
+                  href={Link.Path}
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    Location.pathname === Link.Path
+                      ? 'bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Link.Icon className="w-4 h-4 mr-2" />
+                  {Link.Label}
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-700 dark:text-gray-300">{User?.Name}</span>
+            <button
+              onClick={HandleLogout}
+              className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

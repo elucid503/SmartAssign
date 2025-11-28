@@ -1,0 +1,15 @@
+{
+  "name": "smartassign-root",
+  "version": "1.0.0",
+  "description": "SmartAssign - Automated Time Management System",
+  "scripts": {
+    "install:all": "cd Backend && bun install && cd ../Frontend && bun install",
+    "dev:backend": "cd Backend && bun run dev",
+    "dev:frontend": "cd Frontend && bun run dev",
+    "build:all": "cd Backend && bun run build && cd ../Frontend && bun run build",
+    "start:all": "cd Backend && bun run start && cd ../Frontend && bun run start"
+  },
+  "keywords": ["task-management", "scheduling", "automation"],
+  "author": "SWEG Class Team",
+  "license": "MIT"
+}

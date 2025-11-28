@@ -1,0 +1,59 @@
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
+import { ConnectDatabase } from './Config/Database';
+import TaskRoutes from './Routes/TaskRoutes';
+import CalendarRoutes from './Routes/CalendarRoutes';
+import UserRoutes from './Routes/UserRoutes';
+import ScheduleRoutes from './Routes/ScheduleRoutes';
+
+const App = new Hono();
+
+// Middleware
+App.use('*', logger());
+App.use('*', cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  credentials: true,
+}));
+
+// Health check
+App.get('/health', (c) => {
+  return c.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// API Routes
+App.route('/api/users', UserRoutes);
+App.route('/api/tasks', TaskRoutes);
+App.route('/api/calendar', CalendarRoutes);
+App.route('/api/schedule', ScheduleRoutes);
+
+// Error handling
+App.onError((err, c) => {
+  console.error('Error:', err);
+  return c.json({ error: err.message || 'Internal Server Error' }, 500);
+});
+
+// 404 handler
+App.notFound((c) => {
+  return c.json({ error: 'Not Found' }, 404);
+});
+
+const Port = process.env.PORT || 3000;
+
+// Start server
+const StartServer = async () => {
+  try {
+    await ConnectDatabase();
+    console.log('Database connected successfully');
+    
+    console.log(`Server running on http://localhost:${Port}`);
+    return App;
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+StartServer();
+
+export default App;
