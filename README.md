@@ -1,58 +1,21 @@
 # SmartAssign - Automated Time Management System
 
-## Executive Summary
+## Summary
 
 SmartAssign is an automated time management application that intelligently sorts and schedules tasks based on urgency, due date, and estimated completion time. The system bridges the gap between overly complex tools and basic to-do lists, offering a balance of simplicity and smart functionality.
 
 ## Features
 
-### High Priority Features (Implemented)
+### Implemented High-Priority Features
 
-#### ✅ Calendar Management
+#### Calendar Management
 - Create, view, edit, and delete calendar events
-- Support for recurring events (daily, weekly, monthly, yearly)
-- One-time events with specific dates and times
-- Export calendar data to .ics format
-- Event reminders and notifications
-- Color-coding by category
 
-#### ✅ Task Management
+#### Task Management
 - Create tasks with title, description, due date, category, priority, estimated time, and status
-- Edit and delete tasks
-- Mark tasks as complete
-- Filter by category, priority, due date, and completion status
-- Sort by various attributes
-- Task duplication handling
 
-#### ✅ Subtasks
-- Add multiple subtasks to any task
-- Mark individual subtasks as complete
-- Progress indicators for subtask completion
-- Automatic parent task completion when all subtasks are done
-
-#### ✅ Schedule Automation (Core Feature)
+#### Schedule Automation
 - Analyze available time slots between scheduled events
-- Automatically suggest optimal time blocks based on:
-  - Task priority
-  - Estimated completion time
-  - Due date urgency
-  - Calendar commitments
-  - Time preferences
-- Accept, reject, or modify automated schedule suggestions
-- Automatic rescheduling when conflicts arise
-
-#### ✅ User Authentication & Security
-- Secure user registration and login
-- JWT-based authentication
-- Password hashing with bcrypt
-- 30-day token expiration
-
-#### ✅ Usability
-- Clean, intuitive interface
-- Simple navigation
-- Dark mode support
-- Responsive design
-- Fast task creation (< 3 taps)
 
 ## Tech Stack
 
@@ -73,77 +36,11 @@ SmartAssign is an automated time management application that intelligently sorts
 - **Language**: TypeScript
 - **Icons**: Lucide React
 
-## Project Structure
-
-```
-SmartAssign/
-├── Backend/
-│   ├── Src/
-│   │   ├── Config/
-│   │   │   └── Database.ts
-│   │   ├── Controllers/
-│   │   │   ├── CalendarController.ts
-│   │   │   ├── ScheduleController.ts
-│   │   │   ├── TaskController.ts
-│   │   │   └── UserController.ts
-│   │   ├── Middleware/
-│   │   │   └── Auth.ts
-│   │   ├── Models/
-│   │   │   ├── Event.ts
-│   │   │   ├── Task.ts
-│   │   │   └── User.ts
-│   │   ├── Routes/
-│   │   │   ├── CalendarRoutes.ts
-│   │   │   ├── ScheduleRoutes.ts
-│   │   │   ├── TaskRoutes.ts
-│   │   │   └── UserRoutes.ts
-│   │   ├── Services/
-│   │   │   └── SchedulingService.ts
-│   │   ├── Utils/
-│   │   │   ├── Auth.ts
-│   │   │   └── Validation.ts
-│   │   └── Index.ts
-│   ├── .env
-│   ├── .env.example
-│   ├── package.json
-│   └── tsconfig.json
-├── Frontend/
-│   ├── Public/
-│   ├── Src/
-│   │   ├── Components/
-│   │   │   ├── EventCard.tsx
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── ScheduleSuggestionCard.tsx
-│   │   │   └── TaskCard.tsx
-│   │   ├── Pages/
-│   │   │   ├── CalendarPage.tsx
-│   │   │   ├── DashboardPage.tsx
-│   │   │   ├── LoginPage.tsx
-│   │   │   ├── RegisterPage.tsx
-│   │   │   ├── SettingsPage.tsx
-│   │   │   └── TasksPage.tsx
-│   │   ├── Styles/
-│   │   │   └── Index.css
-│   │   ├── Utils/
-│   │   │   ├── Api.ts
-│   │   │   └── AuthContext.tsx
-│   │   ├── App.tsx
-│   │   └── Main.tsx
-│   ├── .env
-│   ├── .env.example
-│   ├── index.html
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── vite.config.ts
-└── README.md
-```
-
 ## Getting Started
 
 ### Prerequisites
 
 - **Bun**: Install from [bun.sh](https://bun.sh)
-- **MongoDB**: Install from [mongodb.com](https://www.mongodb.com/try/download/community)
 
 ### Backend Setup
 
@@ -158,20 +55,14 @@ SmartAssign/
    ```
 
 3. Configure environment variables:
-   - Copy `.env.example` to `.env`
-   - Update the values as needed (especially `JWT_SECRET` for production)
+   - Update the values as needed
 
-4. Start MongoDB (if not running as a service):
-   ```bash
-   mongod
-   ```
-
-5. Run the development server:
+4. Run the development server:
    ```bash
    bun run dev
    ```
 
-   The Backend will start on `http://localhost:3000`
+   The Backend will then start on `http://localhost:3000`
 
 ### Frontend Setup
 
@@ -186,15 +77,14 @@ SmartAssign/
    ```
 
 3. Configure environment variables:
-   - Copy `.env.example` to `.env`
-   - Ensure `VITE_API_URL` points to your Backend (default: `http://localhost:3000/api`)
+   - Ensure `VITE_API_URL` points to the Backend API entry point (default: `http://localhost:3000/api`)
 
 4. Run the development server:
    ```bash
    bun run dev
    ```
 
-   The Frontend will start on `http://localhost:5173`
+   The Frontend will start on `http://localhost:5173` (or whatever port Vite is configured for)
 
 ### Building for Production
 
@@ -377,37 +267,3 @@ The scheduling automation uses a sophisticated algorithm that:
    - Matches task duration to available slots
    - Prefers slots within preferred time range
    - Automatically reschedules on conflicts
-
-## PascalCase Convention
-
-All files, directories, variables, and functions follow PascalCase naming:
-- Files: `UserController.ts`, `TaskRoutes.ts`
-- Directories: `Components/`, `Services/`
-- Variables: `NewTask`, `IsLoading`
-- Functions: `HandleSubmit`, `FetchTasks`
-
-## Future Enhancements
-
-### Moderate Priority (Not Yet Implemented)
-- Push notifications for tasks and events
-- iOS Calendar API integration
-- Email connection (Gmail, Outlook, iCloud)
-- Enhanced task categories and custom classes
-
-### Low Priority (Not Yet Implemented)
-- iOS widgets (small, medium, large)
-- Import calendar from .ics files
-- Advanced recurring patterns
-- Mobile responsive optimizations
-
-## License
-
-This project is part of a Software Engineering coursework.
-
-## Contributors
-
-SWEG Class Project Team
-
-## Support
-
-For issues or questions, please create an issue in the project repository.
