@@ -5,22 +5,41 @@ const JwtSecret = process.env.JWT_SECRET || 'default-secret-key';
 const JwtExpiresIn = process.env.JWT_EXPIRES_IN || '30d';
 
 export const HashPassword = async (Password: string): Promise<string> => {
+
   const Salt = await bcrypt.genSalt(10);
   return bcrypt.hash(Password, Salt);
+
 };
 
 export const ComparePassword = async (Password: string, HashedPassword: string): Promise<boolean> => {
+
   return bcrypt.compare(Password, HashedPassword);
+
 };
 
-export const GenerateToken = (UserId: string): string => {
-  return jwt.sign({ UserId }, JwtSecret, { expiresIn: JwtExpiresIn });
+export const GenerateToken = (UserID: string): string => {
+
+  return jwt.sign({ UserID }, JwtSecret, { expiresIn: JwtExpiresIn as any });
+
 };
 
-export const VerifyToken = (Token: string): { UserId: string } => {
-  try {
-    return jwt.verify(Token, JwtSecret) as { UserId: string };
-  } catch (error) {
-    throw new Error('Invalid or expired token');
-  }
+export const VerifyToken = async (Token: string): Promise<{ UserID: string }> => {
+
+  return new Promise((resolve, reject) => {
+
+    jwt.verify(Token, JwtSecret, (err, decoded) => {
+
+      if (err) {
+
+        reject(new Error('Invalid or expired token'));
+
+      } else {
+
+        resolve(decoded as { UserID: string });
+
+      }
+    });
+
+  });
+
 };

@@ -50,44 +50,48 @@ const CalendarPage: React.FC = () => {
   }, []);
 
   const FetchEvents = async () => {
-    try {
-      const Response = await Api.get('/calendar/events');
-      SetEvents(Response.data.events || []);
-    } catch (Error) {
-      console.error('Error fetching events:', Error);
-    } finally {
-      SetIsLoading(false);
-    }
+    await Api.get('/calendar/events')
+      .then((Response) => {
+        SetEvents(Response.data.events || []);
+      })
+      .catch((Error) => {
+        console.error('Error fetching events:', Error);
+      })
+      .finally(() => {
+        SetIsLoading(false);
+      });
   };
 
   const HandleCreateEvent = async (E: React.FormEvent) => {
     E.preventDefault();
-    try {
-      await Api.post('/calendar/events', NewEvent);
-      SetShowModal(false);
-      SetNewEvent({
-        Title: '',
-        Description: '',
-        StartTime: defaultStartTime,
-        EndTime: defaultEndTime,
-        Location: '',
-        Category: '',
-        Color: '#0ea5e9',
-        IsAllDay: false,
+    await Api.post('/calendar/events', NewEvent)
+      .then(() => {
+        SetShowModal(false);
+        SetNewEvent({
+          Title: '',
+          Description: '',
+          StartTime: defaultStartTime,
+          EndTime: defaultEndTime,
+          Location: '',
+          Category: '',
+          Color: '#0ea5e9',
+          IsAllDay: false,
+        });
+        FetchEvents();
+      })
+      .catch((Error) => {
+        console.error('Error creating event:', Error);
       });
-      FetchEvents();
-    } catch (Error) {
-      console.error('Error creating event:', Error);
-    }
   };
 
   const HandleEventDelete = async (Id: string) => {
-    try {
-      await Api.delete(`/calendar/events/${Id}`);
-      FetchEvents();
-    } catch (Error) {
-      console.error('Error deleting event:', Error);
-    }
+    await Api.delete(`/calendar/events/${Id}`)
+      .then(() => {
+        FetchEvents();
+      })
+      .catch((Error) => {
+        console.error('Error deleting event:', Error);
+      });
   };
 
   const HandleEventEdit = (Event: Event) => {

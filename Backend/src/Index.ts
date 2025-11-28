@@ -2,7 +2,9 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { serveStatic } from 'hono/bun';
+
 import { ConnectDatabase } from './Config/Database';
+
 import TaskRoutes from './Routes/TaskRoutes';
 import CalendarRoutes from './Routes/CalendarRoutes';
 import UserRoutes from './Routes/UserRoutes';
@@ -40,20 +42,18 @@ const Port = process.env.PORT || 3000;
 
 const StartServer = async () => {
 
-  try {
+  return await ConnectDatabase().then(() => {
 
-    await ConnectDatabase();
-    console.log('Database connected successfully');
-    
-    console.log(`Server running on http://localhost:${Port}`);
+      console.log('Database connected successfully');
+      console.log(`Server running on http://localhost:${Port}`);
     return App;
-
-  } catch (error) {
+    
+  }).catch((error) => {
 
     console.error('Failed to start server:', error);
     process.exit(1);
-
-  }
+    
+  });
   
 };
 

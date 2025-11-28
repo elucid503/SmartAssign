@@ -1,31 +1,46 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface ISubtask {
+
   Id: string;
   Title: string;
+
   IsCompleted: boolean;
   Order: number;
+
 }
 
 export interface ITask extends Document {
-  UserId: Types.ObjectId;
+
+  UserID: Types.ObjectId;
+
   Title: string;
   Description?: string;
-  DueDate?: Date;
   Category?: string;
+
+  DueDate?: Date;
+  
   Priority: 'low' | 'medium' | 'high';
   EstimatedTime?: number; // in minutes
+
   Status: 'pending' | 'in-progress' | 'completed';
+
   Subtasks: ISubtask[];
+
   Color?: string;
+
   IsScheduled: boolean;
+  
   ScheduledStartTime?: Date;
   ScheduledEndTime?: Date;
+
   CreatedAt: Date;
   UpdatedAt: Date;
+
 }
 
 const SubtaskSchema = new Schema<ISubtask>({
+
   Id: {
     type: String,
     required: true,
@@ -42,10 +57,12 @@ const SubtaskSchema = new Schema<ISubtask>({
     type: Number,
     required: true,
   },
+
 }, { _id: false });
 
 const TaskSchema = new Schema<ITask>({
-  UserId: {
+
+  UserID: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -99,8 +116,9 @@ const TaskSchema = new Schema<ITask>({
 });
 
 // Index for better query performance
-TaskSchema.index({ UserId: 1, DueDate: 1 });
-TaskSchema.index({ UserId: 1, Status: 1 });
-TaskSchema.index({ UserId: 1, Priority: 1 });
+
+TaskSchema.index({ UserID: 1, DueDate: 1 });
+TaskSchema.index({ UserID: 1, Status: 1 });
+TaskSchema.index({ UserID: 1, Priority: 1 });
 
 export const TaskModel = mongoose.model<ITask>('Task', TaskSchema);

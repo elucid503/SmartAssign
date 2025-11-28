@@ -43,52 +43,56 @@ const DashboardPage: React.FC = () => {
   }, []);
 
   const FetchDashboardData = async () => {
-    try {
-      const [TasksRes, EventsRes, SuggestionsRes] = await Promise.all([
-        Api.get('/tasks?status=pending&status=in-progress'),
-        Api.get('/calendar/events'),
-        Api.get('/schedule/suggestions'),
-      ]);
-
-      SetTasks(TasksRes.data.tasks || []);
-      SetEvents(EventsRes.data.events || []);
-      SetSuggestions(SuggestionsRes.data.suggestions || []);
-    } catch (Error) {
-      console.error('Error fetching dashboard data:', Error);
-    } finally {
-      SetIsLoading(false);
-    }
+    await Promise.all([
+      Api.get('/tasks?status=pending&status=in-progress'),
+      Api.get('/calendar/events'),
+      Api.get('/schedule/suggestions'),
+    ])
+      .then(([TasksRes, EventsRes, SuggestionsRes]) => {
+        SetTasks(TasksRes.data.tasks || []);
+        SetEvents(EventsRes.data.events || []);
+        SetSuggestions(SuggestionsRes.data.suggestions || []);
+      })
+      .catch((Error) => {
+        console.error('Error fetching dashboard data:', Error);
+      })
+      .finally(() => {
+        SetIsLoading(false);
+      });
   };
 
   const HandleTaskStatusChange = async (Id: string, Status: string) => {
-    try {
-      await Api.put(`/tasks/${Id}`, { Status });
-      FetchDashboardData();
-    } catch (Error) {
-      console.error('Error updating task:', Error);
-    }
+    await Api.put(`/tasks/${Id}`, { Status })
+      .then(() => {
+        FetchDashboardData();
+      })
+      .catch((Error) => {
+        console.error('Error updating task:', Error);
+      });
   };
 
   const HandleTaskDelete = async (Id: string) => {
-    try {
-      await Api.delete(`/tasks/${Id}`);
-      FetchDashboardData();
-    } catch (Error) {
-      console.error('Error deleting task:', Error);
-    }
+    await Api.delete(`/tasks/${Id}`)
+      .then(() => {
+        FetchDashboardData();
+      })
+      .catch((Error) => {
+        console.error('Error deleting task:', Error);
+      });
   };
 
   const HandleAcceptSuggestion = async (Suggestion: ScheduleSuggestion) => {
-    try {
-      await Api.post('/schedule/apply', {
-        TaskId: Suggestion.TaskId,
-        ScheduledStart: Suggestion.SuggestedStart,
-        ScheduledEnd: Suggestion.SuggestedEnd,
+    await Api.post('/schedule/apply', {
+      TaskId: Suggestion.TaskId,
+      ScheduledStart: Suggestion.SuggestedStart,
+      ScheduledEnd: Suggestion.SuggestedEnd,
+    })
+      .then(() => {
+        FetchDashboardData();
+      })
+      .catch((Error) => {
+        console.error('Error applying suggestion:', Error);
       });
-      FetchDashboardData();
-    } catch (Error) {
-      console.error('Error applying suggestion:', Error);
-    }
   };
 
   const HandleRejectSuggestion = () => {

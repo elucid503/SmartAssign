@@ -36,69 +36,74 @@ const TasksPage: React.FC = () => {
   }, []);
 
   const FetchTasks = async () => {
-    try {
-      const Response = await Api.get('/tasks');
-      SetTasks(Response.data.tasks || []);
-    } catch (Error) {
-      console.error('Error fetching tasks:', Error);
-    } finally {
-      SetIsLoading(false);
-    }
+    await Api.get('/tasks')
+      .then((Response) => {
+        SetTasks(Response.data.tasks || []);
+      })
+      .catch((Error) => {
+        console.error('Error fetching tasks:', Error);
+      })
+      .finally(() => {
+        SetIsLoading(false);
+      });
   };
 
   const HandleCreateTask = async (E: React.FormEvent) => {
     E.preventDefault();
-    try {
-      // Combine date and time into ISO string
-      let DueDateISO = undefined;
-      if (NewTask.DueDate) {
-        if (NewTask.DueTime) {
-          DueDateISO = `${NewTask.DueDate}T${NewTask.DueTime}:00.000Z`;
-        } else {
-          DueDateISO = `${NewTask.DueDate}T23:59:00.000Z`;
-        }
+    // Combine date and time into ISO string
+    let DueDateISO = undefined;
+    if (NewTask.DueDate) {
+      if (NewTask.DueTime) {
+        DueDateISO = `${NewTask.DueDate}T${NewTask.DueTime}:00.000Z`;
+      } else {
+        DueDateISO = `${NewTask.DueDate}T23:59:00.000Z`;
       }
-
-      await Api.post('/tasks', {
-        Title: NewTask.Title,
-        Description: NewTask.Description || undefined,
-        DueDate: DueDateISO,
-        Priority: NewTask.Priority,
-        EstimatedTime: NewTask.EstimatedTime ? parseInt(NewTask.EstimatedTime) : undefined,
-        Category: NewTask.Category || undefined,
-      });
-      SetShowModal(false);
-      SetNewTask({
-        Title: '',
-        Description: '',
-        DueDate: '',
-        DueTime: '',
-        Priority: 'medium',
-        EstimatedTime: '',
-        Category: '',
-      });
-      FetchTasks();
-    } catch (Error) {
-      console.error('Error creating task:', Error);
     }
+
+    await Api.post('/tasks', {
+      Title: NewTask.Title,
+      Description: NewTask.Description || undefined,
+      DueDate: DueDateISO,
+      Priority: NewTask.Priority,
+      EstimatedTime: NewTask.EstimatedTime ? parseInt(NewTask.EstimatedTime) : undefined,
+      Category: NewTask.Category || undefined,
+    })
+      .then(() => {
+        SetShowModal(false);
+        SetNewTask({
+          Title: '',
+          Description: '',
+          DueDate: '',
+          DueTime: '',
+          Priority: 'medium',
+          EstimatedTime: '',
+          Category: '',
+        });
+        FetchTasks();
+      })
+      .catch((Error) => {
+        console.error('Error creating task:', Error);
+      });
   };
 
   const HandleTaskStatusChange = async (Id: string, Status: string) => {
-    try {
-      await Api.put(`/tasks/${Id}`, { Status });
-      FetchTasks();
-    } catch (Error) {
-      console.error('Error updating task:', Error);
-    }
+    await Api.put(`/tasks/${Id}`, { Status })
+      .then(() => {
+        FetchTasks();
+      })
+      .catch((Error) => {
+        console.error('Error updating task:', Error);
+      });
   };
 
   const HandleTaskDelete = async (Id: string) => {
-    try {
-      await Api.delete(`/tasks/${Id}`);
-      FetchTasks();
-    } catch (Error) {
-      console.error('Error deleting task:', Error);
-    }
+    await Api.delete(`/tasks/${Id}`)
+      .then(() => {
+        FetchTasks();
+      })
+      .catch((Error) => {
+        console.error('Error deleting task:', Error);
+      });
   };
 
   const FilteredTasks = Tasks.filter((Task) => {

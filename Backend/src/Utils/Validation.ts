@@ -1,17 +1,22 @@
 import { z } from 'zod';
 
 export const RegisterSchema = z.object({
+
   Email: z.string().email('Invalid email address'),
   Password: z.string().min(6, 'Password must be at least 6 characters'),
   Name: z.string().min(1, 'Name is required'),
+
 });
 
 export const LoginSchema = z.object({
+
   Email: z.string().email('Invalid email address'),
   Password: z.string().min(1, 'Password is required'),
+
 });
 
 export const TaskSchema = z.object({
+
   Title: z.string().min(1, 'Title is required'),
   Description: z.string().optional(),
   DueDate: z.string().optional(),
@@ -20,16 +25,20 @@ export const TaskSchema = z.object({
   EstimatedTime: z.number().min(0).optional(),
   Status: z.enum(['pending', 'in-progress', 'completed']).default('pending'),
   Color: z.string().optional(),
+
 });
 
 export const UpdateTaskSchema = TaskSchema.partial();
 
 export const SubtaskSchema = z.object({
+
   Title: z.string().min(1, 'Subtask title is required'),
   IsCompleted: z.boolean().default(false),
+
 });
 
 export const EventSchema = z.object({
+
   Title: z.string().min(1, 'Title is required'),
   Description: z.string().optional(),
   StartTime: z.string().refine(val => !isNaN(Date.parse(val)), 'Invalid start time'),
@@ -47,6 +56,7 @@ export const EventSchema = z.object({
   }).optional(),
   Reminders: z.array(z.number()).default([]),
   IsAllDay: z.boolean().default(false),
+
 });
 
 export const UpdateEventSchema = EventSchema.partial();
