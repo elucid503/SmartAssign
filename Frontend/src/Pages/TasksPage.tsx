@@ -25,6 +25,7 @@ const TasksPage: React.FC = () => {
     Title: '',
     Description: '',
     DueDate: '',
+    DueTime: '',
     Priority: 'medium',
     EstimatedTime: '',
     Category: '',
@@ -48,15 +49,30 @@ const TasksPage: React.FC = () => {
   const HandleCreateTask = async (E: React.FormEvent) => {
     E.preventDefault();
     try {
+      // Combine date and time into ISO string
+      let DueDateISO = undefined;
+      if (NewTask.DueDate) {
+        if (NewTask.DueTime) {
+          DueDateISO = `${NewTask.DueDate}T${NewTask.DueTime}:00.000Z`;
+        } else {
+          DueDateISO = `${NewTask.DueDate}T23:59:00.000Z`;
+        }
+      }
+
       await Api.post('/tasks', {
-        ...NewTask,
+        Title: NewTask.Title,
+        Description: NewTask.Description || undefined,
+        DueDate: DueDateISO,
+        Priority: NewTask.Priority,
         EstimatedTime: NewTask.EstimatedTime ? parseInt(NewTask.EstimatedTime) : undefined,
+        Category: NewTask.Category || undefined,
       });
       SetShowModal(false);
       SetNewTask({
         Title: '',
         Description: '',
         DueDate: '',
+        DueTime: '',
         Priority: 'medium',
         EstimatedTime: '',
         Category: '',
@@ -187,9 +203,19 @@ const TasksPage: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium mb-2">Due Date</label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   value={NewTask.DueDate}
                   onChange={(E) => SetNewTask({ ...NewTask, DueDate: E.target.value })}
+                  className="input-field"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Due Time (optional)</label>
+                <input
+                  type="time"
+                  value={NewTask.DueTime}
+                  onChange={(E) => SetNewTask({ ...NewTask, DueTime: E.target.value })}
                   className="input-field"
                 />
               </div>

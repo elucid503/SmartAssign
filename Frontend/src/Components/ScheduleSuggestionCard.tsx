@@ -22,8 +22,8 @@ const ScheduleSuggestionCard: React.FC<ScheduleSuggestionCardProps> = ({
   OnReject,
 }) => {
   const FormatDateTime = (DateString: string) => {
-    const Date = new Date(DateString);
-    return Date.toLocaleString('en-US', {
+    const DateObj = new Date(DateString);
+    return DateObj.toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
       hour: 'numeric',

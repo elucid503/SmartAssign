@@ -36,8 +36,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ Task, OnDelete, OnStatusChange, OnC
 
   const FormatDate = (DateString?: string) => {
     if (!DateString) return '';
-    const Date = new Date(DateString);
-    return Date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const DateObj = new Date(DateString);
+    return DateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   const HandleStatusToggle = (E: React.MouseEvent) => {
