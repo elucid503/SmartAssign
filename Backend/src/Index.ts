@@ -16,7 +16,7 @@ const App = new Hono();
 // Middleware
 
 App.use('*', logger());
-App.use('*', cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173', credentials: true, }));
+App.use('*', cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173', credentials: true })); // CORS fallback to the vite dev server
 
 // API Routes 
 
@@ -46,8 +46,9 @@ const StartServer = async () => {
 
   return await ConnectDatabase().then(() => {
 
-      console.log('Database connected successfully');
-      console.log(`Server running on http://localhost:${Port}`);
+    console.log('Database connected successfully');
+    console.log(`Server running on http://localhost:${Port}`);
+    
     return App;
     
   }).catch((error) => {
