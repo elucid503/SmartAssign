@@ -223,12 +223,12 @@ export class SchedulingService {
 
   /**
    * Generate schedule suggestions for unscheduled tasks
-   */
+  */
   static async GenerateScheduleSuggestions(UserID: string, StartDate?: string, EndDate?: string): Promise<ScheduleSuggestion[]> {
 
     const Now = new Date();
     const Start = StartDate ? parseISO(StartDate) : startOfDay(Now);
-    const End = EndDate ? parseISO(EndDate) : endOfDay(addMinutes(Start, 7 * 24 * 60));
+    const End = EndDate ? parseISO(EndDate) : endOfDay(addMinutes(Start, 7 * 24 * 60)); // Next 7 days
 
     try {
 

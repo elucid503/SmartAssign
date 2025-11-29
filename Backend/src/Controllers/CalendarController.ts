@@ -2,7 +2,6 @@ import { Context } from 'hono';
 import { startOfDay, endOfDay, parseISO } from 'date-fns';
 
 import { EventModel } from '../Models/Event';
-
 import { GetUserID } from '../Middleware/Auth';
 
 import { EventSchema, UpdateEventSchema } from '../Utils/Validation';

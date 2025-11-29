@@ -1,6 +1,7 @@
 import { Context } from 'hono'
   
 import { GetUserID } from '../Middleware/Auth';
+
 import { SchedulingService } from '../Services/SchedulingService';
 
 export class ScheduleController {
@@ -54,6 +55,7 @@ export class ScheduleController {
       return c.json({
 
         message: 'Schedule applied successfully',
+
         task: Result.task,
         event: Result.event,
 
@@ -73,25 +75,28 @@ export class ScheduleController {
     const TaskId = c.req.param('id');
 
     // Get the excluded time from the request body (the currently suggested time to avoid)
+
     let ExcludedStart: Date | undefined;
     
-    try {
-      const Body = await c.req.json();
-      if (Body.ExcludedStart) {
-        ExcludedStart = new Date(Body.ExcludedStart);
-      }
-    } catch {
-      // No body provided, that's fine
+    const Body = await c.req.json();
+
+    if (Body.ExcludedStart) {
+
+      ExcludedStart = new Date(Body.ExcludedStart);
+
     }
 
     // Generate a new suggestion for this specific task, excluding the previous time
+
     return await SchedulingService.GenerateSingleTaskSuggestion(UserID, TaskId, ExcludedStart).then((NewSuggestion) => {
 
       return c.json({
+      
         message: NewSuggestion ? 'New time found successfully' : 'No alternative time slots available',
         newSuggestion: NewSuggestion,
-      });
       
+      });
+    
     }).catch((error: any) => {
 
       return c.json({ error: error.message || 'Failed to reschedule task' }, 500);
