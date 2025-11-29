@@ -248,9 +248,20 @@ POST /api/schedule/reschedule/:id
 Response: { message, task, newSuggestion }
 ```
 
+### AI Endpoints
+
+All AI endpoints require authentication.
+
+#### Parse Natural Language Task
+```
+POST /api/ai/parse-task
+Body: { natural language task description }
+Response: { message, task }
+```
+
 ## Scheduling Algorithm
 
-The scheduling automation uses a sophisticated algorithm that:
+The scheduling automation uses a score-based algorithm that:
 
 1. **Calculates Priority Scores**:
    - Base priority (high=100, medium=50, low=25)

@@ -1,48 +1,80 @@
 import axios from 'axios';
 
-const ApiUrl = (import.meta as any).env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:3000/api';
 
-const Api = axios.create({
-  baseURL: ApiUrl,
+const API = axios.create({
+
+  baseURL: API_URL,
+
   headers: {
+
     'Content-Type': 'application/json',
+
   },
+
 });
 
 // Add token to requests
-Api.interceptors.request.use((config) => {
+
+API.interceptors.request.use((Config) => {
+
   const Token = localStorage.getItem('token');
+
   if (Token) {
-    config.headers.Authorization = `Bearer ${Token}`;
+
+    Config.headers.Authorization = `Bearer ${Token}`;
+
   }
-  return config;
+
+  return Config;
+
 });
 
 // Custom event for auth state changes
+
 export const AuthEvents = {
-  onLogout: new Set<() => void>(),
-  triggerLogout: () => {
-    AuthEvents.onLogout.forEach((callback) => callback());
+
+  OnLogout: new Set<() => void>(),
+
+  TriggerLogout: () => {
+
+    AuthEvents.OnLogout.forEach((callback) => callback());
+
   },
+
 };
 
 // Handle 401 errors
-Api.interceptors.response.use(
+
+API.interceptors.response.use(
+
   (response) => response,
+
   (error) => {
+
     if (error.response?.status === 401) {
+
       // Only clear auth and redirect if we had a token (user was logged in)
+
       const HadToken = localStorage.getItem('token');
+
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       
       if (HadToken) {
-        // Use custom event to trigger logout in React context instead of hard redirect
-        AuthEvents.triggerLogout();
+
+        // Triggers logout in React context instead of hard redirect
+
+        AuthEvents.TriggerLogout();
+
       }
+      
     }
+
     return Promise.reject(error);
+
   }
+
 );
 
-export default Api;
+export default API;
