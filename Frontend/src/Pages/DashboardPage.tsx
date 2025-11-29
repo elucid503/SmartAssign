@@ -4,7 +4,7 @@ import { Calendar, CheckSquare, Clock, TrendingUp, Sparkles, Send, Loader2 } fro
 import Navbar, { MobileNav } from '../Components/Navbar';
 
 import TaskCard from '../Components/TaskCard';
-import ScheduleSuggestionCard from '../Components/ScheduleSuggestionCard';
+import ScheduleSuggestionCard from '../Components/SuggestionCard';
 
 import API from '../Utils/API';
 
