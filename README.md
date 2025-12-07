@@ -6,7 +6,7 @@ SmartAssign is an automated time management application that intelligently sorts
 
 ## Features
 
-### Implemented High-Priority Features
+### Implemented Features
 
 #### Calendar Management
 - Create, view, edit, and delete calendar events
